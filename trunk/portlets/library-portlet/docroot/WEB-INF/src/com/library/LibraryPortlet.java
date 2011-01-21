@@ -11,6 +11,7 @@ import com.library.slayer.model.LMSBook;
 import com.library.slayer.model.impl.LMSBookImpl;
 import com.library.slayer.service.LMSBookLocalServiceUtil;
 import com.liferay.counter.service.CounterLocalServiceUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.util.bridges.mvc.MVCPortlet;
@@ -53,5 +54,32 @@ public class LibraryPortlet extends MVCPortlet {
 		} catch (SystemException e) {
 			e.printStackTrace();
 		}
+		
+		// gracefully redirecting to the default portlet view
+		String redirectURL = ParamUtil.getString(actionRequest, "redirectURL");
+		actionResponse.sendRedirect(redirectURL);
+		
+	}
+	
+	public void deleteBook(ActionRequest actionRequest,
+			ActionResponse actionResponse) throws IOException, PortletException {
+	
+		long bookId = ParamUtil.getLong(actionRequest, "bookId");
+		
+		if (bookId > 0L) {
+			try {
+				LMSBookLocalServiceUtil.deleteLMSBook(bookId);
+			} catch (PortalException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SystemException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		// gracefully redirecting to the default portlet view
+		String redirectURL = ParamUtil.getString(actionRequest, "redirectURL");
+		actionResponse.sendRedirect(redirectURL);
 	}
 }
