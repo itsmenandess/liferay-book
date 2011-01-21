@@ -7,3 +7,10 @@ Welcome to our library
 </portlet:renderURL>
 
 <br/><a href="<%= updateBookURL %>">Add new Book &raquo;</a>
+
+<%
+	PortletURL listBooksURL = renderResponse.createRenderURL();
+	listBooksURL.setParameter("jspPage", "/html/library/list.jsp");
+%>
+
+<a href="<%= listBooksURL.toString() %>">Show all books &raquo;</a>

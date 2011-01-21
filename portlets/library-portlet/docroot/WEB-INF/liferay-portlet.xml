@@ -8,6 +8,12 @@
 		<icon>/icon.png</icon>
 		<instanceable>false</instanceable>
 		<header-portlet-css>/css/portlet.css</header-portlet-css>
+		<header-portal-javascript>
+		 	/html/js/jquery/jquery.js 
+		</header-portal-javascript>
+		<header-portlet-javascript>
+			http://ajax.microsoft.com/ajax/jquery.validate/1.7/jquery.validate.min.js
+		</header-portlet-javascript>
 		<footer-portlet-javascript>
 			/js/javascript.js
 		</footer-portlet-javascript>
