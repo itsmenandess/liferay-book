@@ -5,6 +5,12 @@
 <% 
 	PortletURL updateBookURL = renderResponse.createActionURL();
 	updateBookURL.setParameter(ActionRequest.ACTION_NAME, "updateBook");
+	
+	LMSBook book = new LMSBookImpl();
+	long bookId = ParamUtil.getLong(request, "bookId");
+	if (bookId > 0L) {
+		book = LMSBookLocalServiceUtil.getLMSBook(bookId);
+	}
 %>
 
 <%-- 
@@ -17,8 +23,9 @@
 
 <aui:form name="fm" method="POST" action="<%= updateBookURL.toString() %>" onSubmit="<%= updateBookURL.toString() %>">
 	<aui:input type="hidden" name="redirectURL" value="<%= renderResponse.createRenderURL().toString() %>"/>
-	<aui:input name="bookTitle" label="Book Title"/>
-	<aui:input name="author"/>
+	<aui:input type="hidden" name="bookId" value="<%= String.valueOf(book.getBookId()) %>"/>
+	<aui:input name="bookTitle" label="Book Title" value="<%= book.getBookTitle() %>"/>
+	<aui:input name="author" value="<%= book.getAuthor() %>"/>
 	<aui:button type="submit" value="Save"/>
 </aui:form>
 

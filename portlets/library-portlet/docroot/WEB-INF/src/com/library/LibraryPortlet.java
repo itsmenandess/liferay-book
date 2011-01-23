@@ -10,7 +10,6 @@ import javax.portlet.PortletException;
 import com.library.slayer.model.LMSBook;
 import com.library.slayer.model.impl.LMSBookImpl;
 import com.library.slayer.service.LMSBookLocalServiceUtil;
-import com.liferay.counter.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -27,24 +26,39 @@ public class LibraryPortlet extends MVCPortlet {
 		String bookTitle = ParamUtil.getString(actionRequest, "bookTitle");
 		String author = ParamUtil.getString(actionRequest, "author");
 		
+		long bookId = ParamUtil.getLong(actionRequest, "bookId");
 		
-		LMSBook book = new LMSBookImpl();
-		
-		// set primary key
-		long bookId = 0L;
-		try {
-			bookId = 
-				CounterLocalServiceUtil.increment(
-						this.getClass().getName());
-		} catch (SystemException e) {
-			e.printStackTrace();
+		LMSBook book = null;
+		if (bookId > 0L) {
+			try {
+				book = LMSBookLocalServiceUtil.getLMSBook(bookId);
+			} catch (PortalException e) {
+				e.printStackTrace();
+			} catch (SystemException e) {
+				e.printStackTrace();
+			}
+		} else {
+			book = new LMSBookImpl();
 		}
-		book.setBookId(bookId);
-		
+			
+				
 		// set UI fields
 		book.setBookTitle(bookTitle);
 		book.setAuthor(author);
 		
+		if (bookId > 0L) {
+			modifyBook(book);
+		} else {
+			addBook(book);
+		}
+		
+		// gracefully redirecting to the default portlet view
+		String redirectURL = ParamUtil.getString(actionRequest, "redirectURL");
+		actionResponse.sendRedirect(redirectURL);
+		
+	}
+
+	private void addBook(LMSBook book) {
 		// set audit field(s)
 		book.setDateAdded(new Date());
 		
@@ -54,11 +68,18 @@ public class LibraryPortlet extends MVCPortlet {
 		} catch (SystemException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private void modifyBook(LMSBook book) {
 		
-		// gracefully redirecting to the default portlet view
-		String redirectURL = ParamUtil.getString(actionRequest, "redirectURL");
-		actionResponse.sendRedirect(redirectURL);
+		book.setDateModified(new Date());
 		
+		try {
+			LMSBookLocalServiceUtil.updateLMSBook(book);
+		} catch (SystemException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void deleteBook(ActionRequest actionRequest,
