@@ -1,0 +1,1 @@
+This SVN contains the source code covered in the book "Liferay portlet Development - A step-by-step guide", published by mPower Global Inc.
